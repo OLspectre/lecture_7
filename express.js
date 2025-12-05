@@ -1,6 +1,6 @@
 // IMPORTS
 import express from "express";
-import pool from "../database/db.js";
+import pool from "./src/database/connection.js";
 
 
 
@@ -11,27 +11,6 @@ const app = express();
 
 const PORT = 3000;
 
-app.listen(PORT, (err) => {
-    (err)
-        ? console.error("Server failed to start", err)
-        : console.log(`Server running on port ${PORT}`);
-});
 
-// CRUD OPERATIONS
 
-app.get("/users", async (req, res) => {
 
-    try {
-        const [rows] = await pool.execute('SELECT * FROM users');
-
-        res.status(200).json(rows);
-    }
-    catch (err) {
-        console.error("Kritiskt fel", err);
-
-        res.status(500).json({
-            message: "Ett oväntat internt serverfel inträffade.",
-            detail: err.message // Använd err.message som sträng i en ny egenskap
-        });
-    }
-});
