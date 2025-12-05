@@ -1,17 +1,17 @@
 
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 import { config } from "dotenv";
 
 config();
 
-const pool = mysql.createPool({
+let pool = mysql.createPool({
     host: process.env.DB_HOST,
-    user: process.env.DB__USER,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    name: process.env.DB_NAME,
+    database: 'lecture_7_db',
     port: process.env.DB_PORT
 });
-
+export default pool;
 
 pool.getConnection((err, connection) => {
     if (err) {
@@ -21,4 +21,4 @@ pool.getConnection((err, connection) => {
         connection.release();
     }
 });
-export default pool;
+
