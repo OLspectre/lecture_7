@@ -3,7 +3,6 @@ import pool from "./src/database/connection.js";
 
 
 const PORT = process.env.PORT || 3000;
-
 // Develop at IIFE startServer 
 
 (async function startServer() {
@@ -25,14 +24,3 @@ const PORT = process.env.PORT || 3000;
     }
 
 })();
-
-pool.getConnection((err, connection) => {
-    if (err) {
-        console.error(("Database connection failed:", err));
-    } else {
-        console.log("Database connected successfully");
-        connection.release();
-    }
-});
-
-
