@@ -1,11 +1,38 @@
 import { app } from "./express.js";
+import pool from "./src/database/connection.js";
 
 
-// Develop at IIFE startServer 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, (err) => {
-    (err)
-        ? console.error("Server failed to start", err)
-        : console.log(`Server running on port ${PORT}`);
+// Develop at IIFE startServer 
+
+(async function startServer() {
+
+    try {
+        const [result] = await pool.query("SELECT 'connected' AS status"); // SIMULATED TEST to se if database is connected correctly.
+
+        console.log("db response:", result);
+        console.log("Database connection was successful!");
+
+        app.listen(PORT, (err) => {
+            (err)
+                ? console.error("Server failed to start", err)
+                : console.log(`Server running on port ${PORT}`);
+        });
+    }
+    catch (err) {
+        console.error("Database connection was NOT successful", err.message);
+    }
+
+})();
+
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error(("Database connection failed:", err));
+    } else {
+        console.log("Database connected successfully");
+        connection.release();
+    }
 });
+
+
