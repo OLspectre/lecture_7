@@ -9,12 +9,23 @@ export async function getProductById(id) {
 
     const sql = `
     SELECT 
-        product 
+        * 
     FROM 
         products
     WHERE id = ?
     `
-    const [result] = await pool.execute(sql, [id]);
 
-    return result;
+    try {
+        const [result] = await pool.execute(sql, [id]);
+
+        console.log("rad 21", result);
+        return result;
+    }
+    catch (err) {
+        console.error("Error", err.message);
+
+    }
+
+
+
 };
