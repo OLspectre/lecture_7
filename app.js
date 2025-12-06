@@ -1,8 +1,9 @@
 import { app } from "./express.js";
-import pool from "./src/database/connection.js";
+import { pool } from "./src/database/connection.js";
 
 
 const PORT = process.env.PORT || 3000;
+
 // Develop at IIFE startServer 
 
 (async function startServer() {

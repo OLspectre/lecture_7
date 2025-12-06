@@ -1,6 +1,6 @@
 // IMPORTS
 import express from "express";
-import { router as api } from './route/api.js'
+import { router as api } from './src/routes/api.js'
 
 import { config } from 'dotenv';
 config();
