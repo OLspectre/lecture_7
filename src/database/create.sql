@@ -72,3 +72,8 @@ VALUES
 );
 
 
+
+
+UPDATE products
+SET quantity = 125
+WHERE id = 4;
