@@ -26,7 +26,7 @@ export async function getSupplierDetailsForProduct(id) {
     INNER JOIN
         suppliers AS s ON p.supplier_id = s.supplier_id
     WHERE
-        P.ID = ?
+        P.id = ?
     `
     try {
         const [result] = await pool.execute(sql, [id]);
@@ -60,11 +60,26 @@ export async function getProductById(id) {
 };
 
 export async function getInventoryOfProduct(id) {
+    console.log("looking for:", id);
 
     const sql = `
     SELECT 
-        
+        id AS product_id,
+        supplier_id,
+        quantity,
+        updated_at
+    FROM
+        products
+    WHERE
+    id = ?
+    `
 
-`
+    try {
+        const [result] = await pool.execute(sql, [id]);
+        return result;
+    }
+    catch (err) {
+        console.error("Error", err.message);
+    }
 
 };
