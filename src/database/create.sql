@@ -70,3 +70,48 @@ VALUES
     20,
     2  -- Leverantör Lokala Trävaror & Co
 );
+
+
+
+
+UPDATE suppliers
+SET 
+    contact_info = "kontakt@globaltech.se"
+WHERE 
+    supplier_id = 1;
+
+UPDATE suppliers
+SET 
+    contact_info = "info@tränilsson.com"
+WHERE 
+    supplier_id = 2;
+
+UPDATE suppliers
+SET 
+    contact_info = "order@nordictrade.net, "
+WHERE 
+    supplier_id = 3;
+
+
+
+UPDATE suppliers
+SET 
+    supplier_name = "Fjällvind Energi AB",
+    contact_info = "support@fjallvind.se"
+WHERE 
+    supplier_id = 4;
+
+UPDATE suppliers
+SET 
+    supplier_name = "Oceanic Seafood Import",
+    contact_info = "orders@oceanic.net"
+WHERE 
+    supplier_id = 5;
+
+UPDATE suppliers
+SET 
+    supplier_name = "Stadens Kontorsmaterial",
+    contact_info = "kundservice@stadskontor.nu"
+WHERE 
+    supplier_id = 6;
+  
