@@ -51,6 +51,27 @@ router.get("/products/:id/supplier", async (req, res) => {
     }
 });
 
+router.get("products/:id/inventory", async (req, res) => {
+
+    try {
+        const productID = req.params.id;
+        const inventoryOfProduct = await productModel.getInventoryOfProduct(productID);
+
+        if (!inventoryOfProduct) {
+            return res.status(404).json({
+                error: "Not found",
+                message: `Product with id ${productID} is not in the database`
+            });
+        }
+
+        res.status(200).json(inventoryOfProduct);
+    }
+    catch (err) {
+        console.error("Something went wrong when retrieveing product", err.message);
+        res.status(500).json({ err: "Internal Server Error" });
+    }
+});
+
 
 router.get("/products/:id", async (req, res) => {
     try {

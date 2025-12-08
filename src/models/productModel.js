@@ -18,7 +18,9 @@ export async function getSupplierDetailsForProduct(id) {
 
     const sql = `
     SELECT 
-        *
+        s.supplier_id,
+        s.supplier_name,
+        s.contact_info
     from 
         products AS p
     INNER JOIN
@@ -55,4 +57,14 @@ export async function getProductById(id) {
         console.error("Error", err.message);
 
     }
+};
+
+export async function getInventoryOfProduct(id) {
+
+    const sql = `
+    SELECT 
+        
+
+`
+
 };
