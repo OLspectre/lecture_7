@@ -62,8 +62,30 @@ async function handleReadProducts(whatToRead) {
     process.exit(0);
 };
 
-async function handleCreateProduct(newProductData) {
+async function handleCreateProduct(data) {
     // Array of data recieved
     console.log("Will soon create new product");
-    console.log(newProductData);
+    console.log(data);
+
+    if (data.length < 3) {
+        console.error("Error: You must enter name, price, quantity(default 0) and supplier_id");
+        return;
+    }
+
+    const newProduct = {
+        product_name: data[0],
+        description: data[1] || null,
+        price: parseFloat(data[2]),
+        quantity: parseInt(data[3] || 0),
+        supplier_id: parseInt(data[4])
+    };
+
+    if (isNaN(newProduct.price) || isNaN(newProduct.supplier_id)) {
+        console.error("Error: Price and Supplier ID must be a valid number");
+        return;
+    }
+
+    await productModel.createProduct(newProduct);
+    console.log("New product successfully added");
+
 };

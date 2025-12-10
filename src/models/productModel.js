@@ -83,3 +83,8 @@ export async function getInventoryOfProduct(id) {
     }
 
 };
+
+export async function createProduct(data) {
+    console.log("new product to be added:", data);
+
+}
