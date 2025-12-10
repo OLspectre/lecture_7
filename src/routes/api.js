@@ -98,3 +98,4 @@ router.get("/products/:id", async (req, res) => {
         res.status(500).json({ err: "Internal Server Error" });
     }
 });
+
