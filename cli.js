@@ -1,12 +1,28 @@
 import * as productModel from "./src/models/productModel.js"; // Also importing all named functions to this file to be reused
 
+const fullArgs = process.argv.slice(2);
+const instruction = fullArgs[0];
+const instructionArgs = fullArgs.slice(1);
+
+
 // Functions to handle client commands in terminal, read/SELECT, create/INSERT
+switch (instruction) {
+    case "read":
+        await handleReadProducts(instructionArgs[0]);
+        break;
 
-async function handleReadProducts() {
+    case "add":
+        await handleCreateProduct(instructionArgs);
+        break;
 
+    default:
+        console.log("Instruction must either be read or add");
+};
+
+
+
+async function handleReadProducts(whatToRead) {
     // Read all or a specific id of a products.
-    const whatToRead = process.argv[3];
-
 
     try {
         if (!whatToRead) {
@@ -17,7 +33,6 @@ async function handleReadProducts() {
         }
 
         if (whatToRead === "all") {
-            console.log("Retrieveing all products...");
             const products = await productModel.getAllProducts();
             console.log("All products in database:");
 
@@ -46,4 +61,9 @@ async function handleReadProducts() {
     }
     process.exit(0);
 };
-handleReadProducts();
+
+async function handleCreateProduct(newProductData) {
+    // Array of data recieved
+    console.log("Will soon create new product");
+    console.log(newProductData);
+};
