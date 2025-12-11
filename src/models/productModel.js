@@ -1,4 +1,4 @@
-import { pool } from "../database/connection.js";
+import { db } from "../database/connection.js";
 
 
 export async function getAllProducts() {
@@ -6,7 +6,7 @@ export async function getAllProducts() {
     const sql = `SELECT * FROM products`;
 
     try {
-        const [result] = await pool.execute(sql, []);
+        const [result] = await db.execute(sql, []);
         return result;
     }
     catch (err) {
@@ -29,7 +29,7 @@ export async function getSupplierDetailsForProduct(id) {
         P.id = ?
     `
     try {
-        const [result] = await pool.execute(sql, [id]);
+        const [result] = await db.execute(sql, [id]);
         console.log(result);
         return result;
     }
@@ -50,7 +50,7 @@ export async function getProductById(id) {
     `
 
     try {
-        const [result] = await pool.execute(sql, [id]);
+        const [result] = await db.execute(sql, [id]);
 
         return result;
     }
@@ -76,7 +76,7 @@ export async function getInventoryOfProduct(id) {
     `
 
     try {
-        const [result] = await pool.execute(sql, [id]);
+        const [result] = await db.execute(sql, [id]);
         return result;
     }
     catch (err) {
@@ -108,7 +108,7 @@ export async function createProduct(data) {
     `;
 
     try {
-        const [result] = await pool.execute(sql, productData);
+        const [result] = await db.execute(sql, productData);
         return result;
     }
     catch (err) {

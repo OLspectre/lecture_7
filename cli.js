@@ -51,6 +51,7 @@ async function handleReadProducts(whatToRead) {
             } else {
                 console.log("Product found:");
                 console.log(product[0]);
+                process.exit(0);
             }
         }
         else {
@@ -60,7 +61,7 @@ async function handleReadProducts(whatToRead) {
     catch (err) {
         console.error("Something went wrong reading product data:", err.message);
     }
-    process.exit(0);
+
 };
 
 async function handleCreateProduct(data) {
