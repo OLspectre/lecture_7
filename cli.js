@@ -17,6 +17,7 @@ switch (instruction) {
 
     default:
         console.log("Instruction must either be read or add");
+        break;
 };
 
 
@@ -37,7 +38,7 @@ async function handleReadProducts(whatToRead) {
             console.log("All products in database:");
 
             products.forEach(p => console.log(`\nProduct ${p.id}:\n`, p));
-            // console.log(products);
+            process.exit(0);
 
         } else if (!isNaN(parseInt(whatToRead))) {
             console.log("argument is valid number");
@@ -60,6 +61,8 @@ async function handleReadProducts(whatToRead) {
     }
     catch (err) {
         console.error("Something went wrong reading product data:", err.message);
+        process.exit(1);
+
     }
 
 };
@@ -73,22 +76,29 @@ async function handleCreateProduct(data) {
         console.error("Error: You must enter name, price, quantity(default 0) and supplier_id");
         return;
     }
+    try {
+        const newProduct = {
+            product_name: data[0],
+            category: data[1],
+            description: data[2] || null,
+            price: parseFloat(data[3]),
+            quantity: parseInt(data[4] || 0),
+            supplier_id: parseInt(data[5])
+        };
 
-    const newProduct = {
-        product_name: data[0],
-        category: data[1],
-        description: data[2] || null,
-        price: parseFloat(data[3]),
-        quantity: parseInt(data[4] || 0),
-        supplier_id: parseInt(data[5])
-    };
+        if (isNaN(newProduct.price) || isNaN(newProduct.supplier_id)) {
+            console.error("Error: Price and Supplier ID must be a valid number");
+            return;
+        }
 
-    if (isNaN(newProduct.price) || isNaN(newProduct.supplier_id)) {
-        console.error("Error: Price and Supplier ID must be a valid number");
-        return;
+        const addedProduct = await productModel.createProduct(newProduct);
+        if (addedProduct) console.log(`A new product: ${addedProduct.product_name} was successfully added`);
+        process.exit(0);
     }
 
-    const addedProduct = await productModel.createProduct(newProduct);
-    if (addedProduct) console.log(`A new product: ${data.product_name} was successfully added`);
-    process.exit(0);
+    catch (err) {
+        console.error("Something went wrong adding a product:", err.message);
+        process.exit(1);
+    }
+
 };
