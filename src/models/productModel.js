@@ -51,6 +51,7 @@ export async function getProductById(id) {
 
     try {
         const [result] = await pool.execute(sql, [id]);
+
         return result;
     }
     catch (err) {
@@ -87,4 +88,30 @@ export async function getInventoryOfProduct(id) {
 export async function createProduct(data) {
     console.log("new product to be added:", data);
 
-}
+    const productData = [];
+    for (const d in data) {
+        productData.push(data[d])
+    }
+    console.log(productData);
+
+
+    const sql = `
+        INSERT INTO products
+            (product_name,
+            category,
+            description,
+            price,
+            quantity,
+            supplier_id)
+        VALUES
+            (?, ?, ?, ?, ?, ?)
+    `;
+
+    try {
+        const [result] = await pool.execute(sql, productData);
+        return result;
+    }
+    catch (err) {
+        console.error("Error:", err.message);
+    }
+};

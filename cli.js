@@ -43,12 +43,13 @@ async function handleReadProducts(whatToRead) {
             console.log("argument is valid number");
             const productID = parseInt(whatToRead);
 
-            console.log(`Retrievening product with ID: ${productID}`);
+            console.log(`Trying to retrieve product iwth ID: ${productID}`);
             const product = await productModel.getProductById(productID);
 
-            if (!product) {
+            if (product.length === 0) {
                 console.log(`Product with ${productID} was not found`);
             } else {
+                console.log("Product found:");
                 console.log(product[0]);
             }
         }
@@ -74,10 +75,11 @@ async function handleCreateProduct(data) {
 
     const newProduct = {
         product_name: data[0],
-        description: data[1] || null,
-        price: parseFloat(data[2]),
-        quantity: parseInt(data[3] || 0),
-        supplier_id: parseInt(data[4])
+        category: data[1],
+        description: data[2] || null,
+        price: parseFloat(data[3]),
+        quantity: parseInt(data[4] || 0),
+        supplier_id: parseInt(data[5])
     };
 
     if (isNaN(newProduct.price) || isNaN(newProduct.supplier_id)) {
@@ -85,7 +87,7 @@ async function handleCreateProduct(data) {
         return;
     }
 
-    await productModel.createProduct(newProduct);
-    console.log("New product successfully added");
-
+    const addedProduct = await productModel.createProduct(newProduct);
+    if (addedProduct) console.log(`A new product: ${data.product_name} was successfully added`);
+    process.exit(0);
 };
