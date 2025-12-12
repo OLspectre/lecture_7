@@ -2,7 +2,6 @@ import { db } from "../database/connection.js";
 
 
 export async function getAllProducts() {
-
     const sql = `SELECT * FROM products`;
 
     try {
@@ -14,6 +13,33 @@ export async function getAllProducts() {
     }
 };
 
+export async function getFilteredProducts(filters = {}) {
+    let sql = `SELECT * FROM products`;
+    let values = [];
+
+    if (filters.supplierId) {
+        sql += ` WHERE supplier_id = ?`;
+        values.push(filters.supplierId);
+    }
+    else if (filters.minQuantity !== undefined) { // Includes filter by 0
+        sql += ` WHERE quantity >= ?`;
+        values.push(filters.minQuantity);
+        sql += ` ORDER BY quantity DESC`;
+    }
+
+    console.log("new SQL:", sql);
+    console.log("Values:", values);
+
+    try {
+        const [result] = await db.execute(sql, values);
+        return result;
+    }
+    catch (err) {
+        console.error("Database Query Error", err.message);
+    }
+
+};
+
 export async function getProductsFromSupplier(id) {
 
     const sql = `
@@ -23,11 +49,12 @@ export async function getProductsFromSupplier(id) {
         products
     WHERE 
         supplier_id = ?
-`
+`;
 
     const [result] = await db.execute(sql, [id]);
     return result;
 }
+
 
 export async function getSupplierDetailsForProduct(id) {
 

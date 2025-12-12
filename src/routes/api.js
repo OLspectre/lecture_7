@@ -7,46 +7,68 @@ export const router = express.Router()
 // Must be first so it matches the exakt route "/products". Always static routes first.
 router.get("/products", async (req, res) => {
 
-    const { supplier_id } = req.query;
-    let products;
+    const { supplier_id, min_quantity } = req.query;
+    let filters = {};
 
+    if (supplier_id && min_quantity) {
+        return res.status(400).json({ message: "Only one filter is allowed, supplier_id or min_quantity" });
+    }
+
+    if (supplier_id) {
+        const id = parseInt(supplier_id);
+
+        if (isNaN(id) || id <= 0) {
+            console.log("Här");
+
+            return res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
+        }
+        filters.supplierId = id;
+
+    }
+
+    if (min_quantity) {
+        const minQuantity = parseInt(min_quantity);
+        if (isNaN(minQuantity) || minQuantity < 0) {
+            return res.status(400).json({ message: `The minimum quantity entered is invalid` });
+        }
+        filters.minQuantity = minQuantity;
+    }
     try {
-        if (supplier_id) {
-            const id = parseInt(supplier_id);
+        let products;
 
-            if (isNaN(id) || id <= 0) {
-                res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
-            }
+        if (Object.keys(filters).length > 0) {
+            console.log("filters är true");
+            console.log(filters);
 
-            products = await productModel.getProductsFromSupplier(id)
-            console.log(products);
-
-            if (!products || products.length === 0) {
-                return res.status(404).json({
-                    error: "Not found",
-                    message: `No products were found with id: ${id}. Supplier might not exist yet.`
-                })
-            }
-
-        } else {
-            products = await productModel.getAllProducts();
+            products = await productModel.getFilteredProducts(filters);
             console.log(products);
 
             if (!products || products.length === 0) {
                 return res.status(404).json({
                     error: "Not found",
                     message: `Database of products is empty.`
-                })
+                });
             }
+
+            return res.status(200).json(products);
+        } else {
+            products = await productModel.getAllProducts();
+
+            if (!products || products.length === 0) {
+                return res.status(404).json({
+                    error: "Not found",
+                    message: `Database of products is empty.`
+                });
+            }
+            console.log(products);
+            return res.status(200).json(products);
         }
+    } catch (err) {
+        console.error("KRITISKT SERVERFEL:", err.stack);
+        console.error("FELMEDDELANDE:", err.message);
 
-
-
-        res.status(200).json(products);
-    }
-    catch (err) {
-        console.error("Something went wrong when retrieveing product", err.message);
-        res.status(500).json({ err: "Internal Server Error" });
+        // Använd return
+        return res.status(500).json({ err: "Internal Server Error" });
     }
 });
 
@@ -58,6 +80,8 @@ router.get("/products/:id/inventory", async (req, res) => {
     const productID = parseInt(id);
 
     if (isNaN(productID) || productID <= 0) {
+        console.log("här");
+
         res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
     }
     try {
