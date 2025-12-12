@@ -3,7 +3,6 @@ import * as productModel from "../models/productModel.js"; // Imports all named 
 export const router = express.Router()
 
 
-
 // Must be first so it matches the exakt route "/products". Always static routes first.
 router.get("/products", async (req, res) => {
 
@@ -23,7 +22,6 @@ router.get("/products", async (req, res) => {
             return res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
         }
         filters.supplierId = id;
-
     }
 
     if (min_quantity) {
@@ -64,29 +62,21 @@ router.get("/products", async (req, res) => {
             return res.status(200).json(products);
         }
     } catch (err) {
-        console.error("KRITISKT SERVERFEL:", err.stack);
-        console.error("FELMEDDELANDE:", err.message);
-
-        // Använd return
+        console.error("Error:", err.message);
         return res.status(500).json({ err: "Internal Server Error" });
     }
 });
 
 
 router.get("/products/:id/inventory", async (req, res) => {
-
     const { id } = req.params;
 
     const productID = parseInt(id);
 
     if (isNaN(productID) || productID <= 0) {
-        console.log("här");
-
         res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
     }
     try {
-        console.log("Id is valid");
-
         const inventoryOfProduct = await productModel.getInventoryOfProduct(productID);
 
         if (!inventoryOfProduct) {
@@ -107,7 +97,6 @@ router.get("/products/:id/inventory", async (req, res) => {
 router.get("/products/:id/supplier", async (req, res) => {
 
     const { id } = req.params;
-
     const productID = parseInt(id);
 
     if (isNaN(productID) || productID <= 0) {
@@ -116,11 +105,9 @@ router.get("/products/:id/supplier", async (req, res) => {
     try {
         console.log(`${productID} is a valid id`);
         const supplierData = await productModel.getSupplierDetailsForProduct(productID);
-
         console.log(supplierData);
 
         if (!supplierData) {
-
             return res.status(404).json({
                 error: "Not found",
                 message: `Product with id ${productID} is not in the database`
@@ -136,9 +123,7 @@ router.get("/products/:id/supplier", async (req, res) => {
 
 
 router.get("/products/:id", async (req, res) => {
-
     const { id } = req.params;
-
     const productID = parseInt(id);
 
     if (isNaN(productID) || productID <= 0) {
@@ -150,15 +135,12 @@ router.get("/products/:id", async (req, res) => {
         console.log(product);
 
         if (!product) {
-
             return res.status(404).json({
                 error: "Not found",
                 message: `Product with id ${productID} is not in the database`
             });
         }
-
         res.status(200).json(product);
-
     }
     catch (err) {
         console.error("Something went wrong when retrieveing product", err.message);

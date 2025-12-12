@@ -5,7 +5,7 @@ const instruction = fullArgs[0];
 const instructionArgs = fullArgs.slice(1);
 
 
-// Functions to handle client commands in terminal, read/SELECT, create/INSERT
+// Functions to handle client commands in terminal, read/SELECT, add/INSERT
 switch (instruction) {
     case "read":
         await handleReadProducts(instructionArgs[0]);
@@ -19,8 +19,6 @@ switch (instruction) {
         console.log("Instruction must either be read or add");
         break;
 };
-
-
 
 async function handleReadProducts(whatToRead) {
     // Read all or a specific id of a products.
@@ -64,7 +62,6 @@ async function handleReadProducts(whatToRead) {
         process.exit(1);
 
     }
-
 };
 
 async function handleCreateProduct(data) {
@@ -74,7 +71,7 @@ async function handleCreateProduct(data) {
 
     if (data.length < 3) {
         console.error("Error: You must enter name, price, quantity(default 0) and supplier_id");
-        return;
+        process.exit(1);
     }
     try {
         const newProduct = {
@@ -88,17 +85,15 @@ async function handleCreateProduct(data) {
 
         if (isNaN(newProduct.price) || isNaN(newProduct.supplier_id)) {
             console.error("Error: Price and Supplier ID must be a valid number");
-            return;
+            process.exit(1);
         }
 
         const addedProduct = await productModel.createProduct(newProduct);
         if (addedProduct) console.log(`A new product: ${addedProduct.product_name} was successfully added`);
         process.exit(0);
     }
-
     catch (err) {
         console.error("Something went wrong adding a product:", err.message);
         process.exit(1);
     }
-
 };

@@ -4,7 +4,7 @@ import { db } from "./src/database/connection.js";
 
 const PORT = process.env.PORT || 3000;
 
-// Develop at IIFE startServer 
+// Develop an IIFE startServer 
 
 (async function startServer() {
 
@@ -23,5 +23,4 @@ const PORT = process.env.PORT || 3000;
     catch (err) {
         console.error("Database connection was NOT successful", err.message);
     }
-
 })();

@@ -10,6 +10,7 @@ export async function getAllProducts() {
     }
     catch (err) {
         console.error("Error", err.message);
+        throw err
     }
 };
 
@@ -36,6 +37,7 @@ export async function getFilteredProducts(filters = {}) {
     }
     catch (err) {
         console.error("Database Query Error", err.message);
+        throw err;
     }
 
 };
@@ -77,6 +79,7 @@ export async function getSupplierDetailsForProduct(id) {
     }
     catch (err) {
         console.error("Error", err.message);
+        throw err;
     }
 };
 
@@ -98,7 +101,7 @@ export async function getProductById(id) {
     }
     catch (err) {
         console.error("Error", err.message);
-
+        throw err;
     }
 };
 
@@ -123,6 +126,7 @@ export async function getInventoryOfProduct(id) {
     }
     catch (err) {
         console.error("Error", err.message);
+        throw err;
     }
 
 };
@@ -155,5 +159,6 @@ export async function createProduct(data) {
     }
     catch (err) {
         console.error("Error:", err.message);
+        throw err;
     }
 };
