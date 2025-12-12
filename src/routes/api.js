@@ -3,21 +3,44 @@ import * as productModel from "../models/productModel.js"; // Imports all named 
 export const router = express.Router()
 
 
-// START WITH API GET REQUESTS
 
 // Must be first so it matches the exakt route "/products". Always static routes first.
 router.get("/products", async (req, res) => {
 
-    try {
-        const products = await productModel.getAllProducts();
-        console.log(products);
+    const { supplier_id } = req.query;
+    let products;
 
-        if (!products) {
-            return res.status(404).json({
-                error: "Not found",
-                message: `Database of products is empty.`
-            })
+    try {
+        if (supplier_id) {
+            const id = parseInt(supplier_id);
+
+            if (isNaN(id) || id <= 0) {
+                res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
+            }
+
+            products = await productModel.getProductsFromSupplier(id)
+            console.log(products);
+
+            if (!products || products.length === 0) {
+                return res.status(404).json({
+                    error: "Not found",
+                    message: `No products were found with id: ${id}. Supplier might not exist yet.`
+                })
+            }
+
+        } else {
+            products = await productModel.getAllProducts();
+            console.log(products);
+
+            if (!products || products.length === 0) {
+                return res.status(404).json({
+                    error: "Not found",
+                    message: `Database of products is empty.`
+                })
+            }
         }
+
+
 
         res.status(200).json(products);
     }
@@ -30,8 +53,16 @@ router.get("/products", async (req, res) => {
 
 router.get("/products/:id/inventory", async (req, res) => {
 
+    const { id } = req.params;
+
+    const productID = parseInt(id);
+
+    if (isNaN(productID) || productID <= 0) {
+        res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
+    }
     try {
-        const productID = req.params.id;
+        console.log("Id is valid");
+
         const inventoryOfProduct = await productModel.getInventoryOfProduct(productID);
 
         if (!inventoryOfProduct) {
@@ -40,7 +71,6 @@ router.get("/products/:id/inventory", async (req, res) => {
                 message: `Product with id ${productID} is not in the database`
             });
         }
-
         res.status(200).json(inventoryOfProduct);
     }
     catch (err) {
@@ -51,12 +81,18 @@ router.get("/products/:id/inventory", async (req, res) => {
 
 
 router.get("/products/:id/supplier", async (req, res) => {
-    try {
-        const productID = req.params.id;
-        console.log("id of wanted product:", productID);
 
-        const supplierData = await productModel.getSupplierDetailsForProduct(productID);
+    const { id } = req.params;
+
+    const productID = parseInt(id);
+
+    if (isNaN(productID) || productID <= 0) {
+        res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
+    }
+    try {
         console.log(`${productID} is a valid id`);
+        const supplierData = await productModel.getSupplierDetailsForProduct(productID);
+
         console.log(supplierData);
 
         if (!supplierData) {
@@ -76,10 +112,16 @@ router.get("/products/:id/supplier", async (req, res) => {
 
 
 router.get("/products/:id", async (req, res) => {
-    try {
-        const productID = req.params.id;
-        console.log(productID);
 
+    const { id } = req.params;
+
+    const productID = parseInt(id);
+
+    if (isNaN(productID) || productID <= 0) {
+        res.status(400).json({ message: "Invalid id, id must be a valid positive number" });
+    }
+
+    try {
         const product = await productModel.getProductById(productID);
         console.log(product);
 
@@ -92,6 +134,7 @@ router.get("/products/:id", async (req, res) => {
         }
 
         res.status(200).json(product);
+
     }
     catch (err) {
         console.error("Something went wrong when retrieveing product", err.message);

@@ -14,6 +14,21 @@ export async function getAllProducts() {
     }
 };
 
+export async function getProductsFromSupplier(id) {
+
+    const sql = `
+    SELECT 
+        * 
+    FROM 
+        products
+    WHERE 
+        supplier_id = ?
+`
+
+    const [result] = await db.execute(sql, [id]);
+    return result;
+}
+
 export async function getSupplierDetailsForProduct(id) {
 
     const sql = `
@@ -21,7 +36,7 @@ export async function getSupplierDetailsForProduct(id) {
         s.supplier_id,
         s.supplier_name,
         s.contact_info
-    from 
+    FROM 
         products AS p
     INNER JOIN
         suppliers AS s ON p.supplier_id = s.supplier_id
